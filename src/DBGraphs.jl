@@ -6,7 +6,7 @@ using LightGraphs
 using JuliaDB
 import JuliaDB: DTable
 import LightGraphs: AbstractGraph, vertices, edges, neighbors, indegree, outdegree,
-       in_neighbors, out_neighbors, nv, ne, is_directed
+       in_neighbors, out_neighbors, nv, ne, is_directed, eltype, is_directed
 
 export DBGraph
 
@@ -27,14 +27,19 @@ end
 #is_directed(::DBGraph) = true
 #is_directed(::Type{DBGraph}) = true
 is_directed(::Type{DBGraph{T}}) where T = false
+eltype(::DBGraph) = Int
+
+function vertices(g::DBGraph)
+  return 1:nv(g) #select(g.table, g.dst, agg=first)
+end
 
 colmax(table, column) = reduce(max,map(x->getfield(x, column), table))
 nv(g::DBGraph) = max(colmax(g.table, g.src), colmax(g.table, g.dst))
 ne(g::DBGraph) = size(g.table,1)
 
-function vertices(g::DBGraph)
-  return select(g.table, g.dst, agg=first)
-end
+# function vertices(g::DBGraph)
+#   return select(g.table, g.dst, agg=first)
+# end
 
 function edges(g::DBGraph)
   return select(g.table, [g.src,g.dst])
