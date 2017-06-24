@@ -23,9 +23,9 @@ function DBGraph(table::DTable)
   return DBGraph(table, :src, :dst, true)
 end
 
-is_directed(g::DBGraph) = g.directed
-is_directed(::DBGraph) = true
-is_directed(::Type{DBGraph}) = true
+#is_directed(g::DBGraph) = g.directed
+#is_directed(::DBGraph) = true
+#is_directed(::Type{DBGraph}) = true
 is_directed(::Type{DBGraph{T}}) where T = true
 
 colmax(table, column) = reduce(max,map(x->getfield(x, column), table))
